@@ -6,7 +6,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: serviceinfo/v1/serviceinfo_service.proto
+// source: services/serviceinfo/v1/serviceinfo_service.proto
 
 package serviceinfov1
 
@@ -31,9 +31,19 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Provides runtime information about the service instance.
+// Provides runtime information about the service instance. Implementations
+// MUST treat `Get` as idempotent and side-effect-free; it is safe to call
+// from health probes and load balancers, and safe to expose via gRPC
+// reflection.
+//
+// Registration order matters in some setups: register
+// `ServiceInfoService` before gRPC reflection so reflection-based
+// tooling (grpcurl, Postman, evans) can discover the method without an
+// extra `.proto` import.
 type ServiceInfoServiceClient interface {
-	// Retrieves service metadata including version and build information.
+	// Returns the current `ServiceInfo` snapshot. Cheap — implementations
+	// SHOULD compute the response from cached values and only re-evaluate
+	// time-shaped fields (`uptime`, leadership state) on demand.
 	Get(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServiceInfo, error)
 }
 
@@ -59,9 +69,19 @@ func (c *serviceInfoServiceClient) Get(ctx context.Context, in *emptypb.Empty, o
 // All implementations must embed UnimplementedServiceInfoServiceServer
 // for forward compatibility.
 //
-// Provides runtime information about the service instance.
+// Provides runtime information about the service instance. Implementations
+// MUST treat `Get` as idempotent and side-effect-free; it is safe to call
+// from health probes and load balancers, and safe to expose via gRPC
+// reflection.
+//
+// Registration order matters in some setups: register
+// `ServiceInfoService` before gRPC reflection so reflection-based
+// tooling (grpcurl, Postman, evans) can discover the method without an
+// extra `.proto` import.
 type ServiceInfoServiceServer interface {
-	// Retrieves service metadata including version and build information.
+	// Returns the current `ServiceInfo` snapshot. Cheap — implementations
+	// SHOULD compute the response from cached values and only re-evaluate
+	// time-shaped fields (`uptime`, leadership state) on demand.
 	Get(context.Context, *emptypb.Empty) (*ServiceInfo, error)
 	mustEmbedUnimplementedServiceInfoServiceServer()
 }
@@ -128,5 +148,5 @@ var ServiceInfoService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "serviceinfo/v1/serviceinfo_service.proto",
+	Metadata: "services/serviceinfo/v1/serviceinfo_service.proto",
 }
