@@ -15,9 +15,9 @@ go get github.com/altessa-s/proto-gen-go@latest
 
 | Import path | Source |
 |-------------|--------|
-| `github.com/altessa-s/proto-gen-go/services/badrequest/v1` | [`services/badrequest/v1`](services/badrequest/v1) |
-| `github.com/altessa-s/proto-gen-go/services/serviceinfo/v1` | [`services/serviceinfo/v1`](services/serviceinfo/v1) |
-| `github.com/altessa-s/proto-gen-go/type/v1` | [`type/v1`](type/v1) |
+| `github.com/altessa-s/proto-gen-go/io/altessa/badrequest/v1` | [`io/altessa/badrequest/v1`](io/altessa/badrequest/v1) |
+| `github.com/altessa-s/proto-gen-go/io/altessa/serviceinfo/v1` | [`io/altessa/serviceinfo/v1`](io/altessa/serviceinfo/v1) |
+| `github.com/altessa-s/proto-gen-go/io/altessa/type/v1` | [`io/altessa/type/v1`](io/altessa/type/v1) |
 
 ## Versioning
 
