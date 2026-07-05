@@ -6,7 +6,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: services/serviceinfo/v1/serviceinfo_service.proto
+// source: io/altessa/serviceinfo/v1/serviceinfo_service.proto
 
 package serviceinfov1
 
@@ -15,7 +15,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,7 +23,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ServiceInfoService_Get_FullMethodName = "/io.altessa.serviceinfo.v1.ServiceInfoService/Get"
+	ServiceInfoService_GetServiceInfo_FullMethodName = "/io.altessa.serviceinfo.v1.ServiceInfoService/GetServiceInfo"
 )
 
 // ServiceInfoServiceClient is the client API for ServiceInfoService service.
@@ -32,7 +31,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // Provides runtime information about the service instance. Implementations
-// MUST treat `Get` as idempotent and side-effect-free; it is safe to call
+// MUST treat `GetServiceInfo` as idempotent and side-effect-free; it is safe to call
 // from health probes and load balancers, and safe to expose via gRPC
 // reflection.
 //
@@ -41,10 +40,11 @@ const (
 // tooling (grpcurl, Postman, evans) can discover the method without an
 // extra `.proto` import.
 type ServiceInfoServiceClient interface {
-	// Returns the current `ServiceInfo` snapshot. Cheap — implementations
-	// SHOULD compute the response from cached values and only re-evaluate
-	// time-shaped fields (`uptime`, leadership state) on demand.
-	Get(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServiceInfo, error)
+	// Returns the current `ServiceInfo` snapshot for the instance handling
+	// the call. Cheap — implementations SHOULD compute the response from
+	// cached values and only re-evaluate time-shaped fields (`uptime`,
+	// leadership state) on demand.
+	GetServiceInfo(ctx context.Context, in *GetServiceInfoRequest, opts ...grpc.CallOption) (*GetServiceInfoResponse, error)
 }
 
 type serviceInfoServiceClient struct {
@@ -55,10 +55,10 @@ func NewServiceInfoServiceClient(cc grpc.ClientConnInterface) ServiceInfoService
 	return &serviceInfoServiceClient{cc}
 }
 
-func (c *serviceInfoServiceClient) Get(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ServiceInfo, error) {
+func (c *serviceInfoServiceClient) GetServiceInfo(ctx context.Context, in *GetServiceInfoRequest, opts ...grpc.CallOption) (*GetServiceInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ServiceInfo)
-	err := c.cc.Invoke(ctx, ServiceInfoService_Get_FullMethodName, in, out, cOpts...)
+	out := new(GetServiceInfoResponse)
+	err := c.cc.Invoke(ctx, ServiceInfoService_GetServiceInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (c *serviceInfoServiceClient) Get(ctx context.Context, in *emptypb.Empty, o
 // for forward compatibility.
 //
 // Provides runtime information about the service instance. Implementations
-// MUST treat `Get` as idempotent and side-effect-free; it is safe to call
+// MUST treat `GetServiceInfo` as idempotent and side-effect-free; it is safe to call
 // from health probes and load balancers, and safe to expose via gRPC
 // reflection.
 //
@@ -79,10 +79,11 @@ func (c *serviceInfoServiceClient) Get(ctx context.Context, in *emptypb.Empty, o
 // tooling (grpcurl, Postman, evans) can discover the method without an
 // extra `.proto` import.
 type ServiceInfoServiceServer interface {
-	// Returns the current `ServiceInfo` snapshot. Cheap — implementations
-	// SHOULD compute the response from cached values and only re-evaluate
-	// time-shaped fields (`uptime`, leadership state) on demand.
-	Get(context.Context, *emptypb.Empty) (*ServiceInfo, error)
+	// Returns the current `ServiceInfo` snapshot for the instance handling
+	// the call. Cheap — implementations SHOULD compute the response from
+	// cached values and only re-evaluate time-shaped fields (`uptime`,
+	// leadership state) on demand.
+	GetServiceInfo(context.Context, *GetServiceInfoRequest) (*GetServiceInfoResponse, error)
 	mustEmbedUnimplementedServiceInfoServiceServer()
 }
 
@@ -93,8 +94,8 @@ type ServiceInfoServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedServiceInfoServiceServer struct{}
 
-func (UnimplementedServiceInfoServiceServer) Get(context.Context, *emptypb.Empty) (*ServiceInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedServiceInfoServiceServer) GetServiceInfo(context.Context, *GetServiceInfoRequest) (*GetServiceInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServiceInfo not implemented")
 }
 func (UnimplementedServiceInfoServiceServer) mustEmbedUnimplementedServiceInfoServiceServer() {}
 func (UnimplementedServiceInfoServiceServer) testEmbeddedByValue()                            {}
@@ -117,20 +118,20 @@ func RegisterServiceInfoServiceServer(s grpc.ServiceRegistrar, srv ServiceInfoSe
 	s.RegisterService(&ServiceInfoService_ServiceDesc, srv)
 }
 
-func _ServiceInfoService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+func _ServiceInfoService_GetServiceInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServiceInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceInfoServiceServer).Get(ctx, in)
+		return srv.(ServiceInfoServiceServer).GetServiceInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ServiceInfoService_Get_FullMethodName,
+		FullMethod: ServiceInfoService_GetServiceInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceInfoServiceServer).Get(ctx, req.(*emptypb.Empty))
+		return srv.(ServiceInfoServiceServer).GetServiceInfo(ctx, req.(*GetServiceInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -143,10 +144,10 @@ var ServiceInfoService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceInfoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Get",
-			Handler:    _ServiceInfoService_Get_Handler,
+			MethodName: "GetServiceInfo",
+			Handler:    _ServiceInfoService_GetServiceInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "services/serviceinfo/v1/serviceinfo_service.proto",
+	Metadata: "io/altessa/serviceinfo/v1/serviceinfo_service.proto",
 }
